@@ -1,35 +1,34 @@
 import 'package:flutter/material.dart';
 import 'auth_service.dart';
+import 'profile_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
-  final AuthService authService;
-
-  LoginScreen(this.authService);
-
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
   String _message = '';
 
   void _login() async {
     if (_formKey.currentState!.validate()) {
-      var user = await widget.authService.signInWithEmailAndPassword(
+      var user = await AuthService().signInWithEmailAndPassword(
         _emailController.text,
         _passwordController.text,
       );
-      setState(() {
-        _message = user != null
-            ? 'Successfully logged in: ${user.email}'
-            : 'Login failed. Please try again.';
-      });
-
       if (user != null) {
-        Navigator.pop(context);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => ProfileScreen(user)), // Pass User
+        );
+      } else {
+        setState(() {
+          _message = 'Login failed. Please check your credentials.';
+        });
       }
     }
   }
@@ -37,38 +36,28 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Login")),
+      appBar: AppBar(title: Text('Login')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
-            children: <Widget>[
+            children: [
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: "Email"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  return null;
-                },
+                decoration: InputDecoration(labelText: 'Email'),
+                validator: (value) => value!.isEmpty ? 'Enter an email' : null,
               ),
               TextFormField(
                 controller: _passwordController,
-                decoration: InputDecoration(labelText: "Password"),
+                decoration: InputDecoration(labelText: 'Password'),
                 obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your password';
-                  }
-                  return null;
-                },
+                validator: (value) => value!.isEmpty ? 'Enter a password' : null,
               ),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _login,
-                child: Text("Login"),
+                child: Text('Login'),
               ),
               Text(_message),
             ],

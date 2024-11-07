@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'auth_service.dart';
-import 'register_screen.dart';
-import 'login_screen.dart';
-import 'firebase_options.dart';
+import 'firebase_options.dart'; // Import the generated Firebase options
+import 'auth_service.dart'; // Replace this with your actual auth screen
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,23 +14,23 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final AuthService authService = AuthService();
     return MaterialApp(
-      title: 'Firebase Auth Demo',
-      home: AuthScreen(authService),
+      title: 'Flutter Auth App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: AuthScreen(), // Initial screen for authentication
     );
   }
 }
 
 class AuthScreen extends StatelessWidget {
-  final AuthService authService;
-
-  AuthScreen(this.authService);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Authentication")),
+      appBar: AppBar(
+        title: Text('Authentication'),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -42,23 +40,53 @@ class AuthScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => RegisterScreen(authService)),
+                    builder: (context) => RegisterScreen(),
+                  ),
                 );
               },
-              child: Text("Register"),
+              child: Text('Register'),
             ),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => LoginScreen(authService)),
+                    builder: (context) => LoginScreen(),
+                  ),
                 );
               },
-              child: Text("Login"),
+              child: Text('Login'),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class RegisterScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Register'),
+      ),
+      body: Center(
+        child: Text('Register Screen Placeholder'),
+      ),
+    );
+  }
+}
+
+class LoginScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login'),
+      ),
+      body: Center(
+        child: Text('Login Screen Placeholder'),
       ),
     );
   }
